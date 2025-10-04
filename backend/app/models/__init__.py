@@ -2,6 +2,8 @@ from app import db
 from datetime import datetime
 from enum import Enum
 import bcrypt
+from sqlalchemy import Numeric
+from decimal import Decimal
 
 class UserRole(Enum):
     ADMIN = "admin"
@@ -92,10 +94,10 @@ class Expense(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('expense_categories.id'), nullable=False)
     
-    amount = db.Column(db.Decimal(10, 2), nullable=False)
+    amount = db.Column(Numeric(10, 2), nullable=False)
     currency = db.Column(db.String(10), nullable=False)
-    amount_in_company_currency = db.Column(db.Decimal(10, 2), nullable=False)
-    exchange_rate = db.Column(db.Decimal(10, 6), nullable=False, default=1.0)
+    amount_in_company_currency = db.Column(Numeric(10, 2), nullable=False)
+    exchange_rate = db.Column(Numeric(10, 6), nullable=False, default=1.0)
     
     description = db.Column(db.Text, nullable=False)
     expense_date = db.Column(db.Date, nullable=False)
@@ -105,7 +107,7 @@ class Expense(db.Model):
     
     # OCR extracted data
     merchant_name = db.Column(db.String(100))
-    extracted_amount = db.Column(db.Decimal(10, 2))
+    extracted_amount = db.Column(Numeric(10, 2))
     extracted_date = db.Column(db.Date)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -125,8 +127,8 @@ class ApprovalRule(db.Model):
     rule_type = db.Column(db.Enum(ApprovalRuleType), nullable=False)
     
     # For amount-based rules
-    min_amount = db.Column(db.Decimal(10, 2), default=0)
-    max_amount = db.Column(db.Decimal(10, 2))
+    min_amount = db.Column(Numeric(10, 2), default=0)
+    max_amount = db.Column(Numeric(10, 2))
     
     # For percentage rules
     required_percentage = db.Column(db.Integer)  # e.g., 60 for 60%
